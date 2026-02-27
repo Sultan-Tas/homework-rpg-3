@@ -54,6 +54,7 @@ public final class BattleEngine {
         while (!teamA.isEmpty() && !teamB.isEmpty()) {
             rounds++;
             result.addLog("—".repeat(20) + "\nRound: " + rounds);
+            //heroes attack
             for(Combatant hero : teamA) {
                 Combatant heroTarget = teamB.get(selectRandom(teamB));
                 critRoll = random.nextDouble(0, 1);
@@ -63,12 +64,14 @@ public final class BattleEngine {
                 }
                 heroTarget.takeDamage(damage);
                 result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", heroTarget.getName(), damage, hero.getName()));
+                //if targeted enemy dies
                 if(!heroTarget.isAlive()){
                     result.addLog(String.format("[%s fainted...]", heroTarget.getName()));
                     teamB.remove(heroTarget);
                 }
 
             }
+            //enemy attacks
             for(Combatant enemy : teamB) {
                 if(!enemy.isAlive()){
                 }
@@ -76,6 +79,7 @@ public final class BattleEngine {
                     Combatant enemyTarget = teamA.get(selectRandom(teamA));
                     enemyTarget.takeDamage(enemy.getAttackPower());
                     result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", enemyTarget.getName(), enemy.getAttackPower(), enemy.getName()));
+                    //if targeted hero dies
                     if(!enemyTarget.isAlive()){
                         result.addLog(String.format("[%s fainted...]", enemyTarget.getName()));
                         teamA.remove(enemyTarget);
