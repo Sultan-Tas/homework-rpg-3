@@ -1,12 +1,12 @@
 package com.narxoz.rpg.battle;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
 import java.util.Random;
 
 public final class BattleEngine {
     private static BattleEngine instance;
-    private Random random = new Random(1L);
+    private Random random = new Random();
 
     private BattleEngine() {
     }
@@ -23,14 +23,12 @@ public final class BattleEngine {
         return this;
     }
 
-    public void reset() {
-        // TODO: reset any battle state if you add it
-    }
-
     public EncounterResult runEncounter(List<Combatant> teamA, List<Combatant> teamB) {
         //validate inputs and run round-based battle
-        // TODO: use random if you add critical hits or target selection
+        //use random if you add critical hits or target selection
         int rounds = 0;
+
+        double critRoll;
         Combatant dead = null;
         //checks for empty strings
         if(teamA.isEmpty() || teamB.isEmpty()) {
@@ -42,23 +40,40 @@ public final class BattleEngine {
         }
 
         EncounterResult result = new EncounterResult();
+
+        //list characters
         result.addLog("►Battle started");
+        result.addLog("Team A:");
+        for(Combatant a : teamA) {
+            result.addLog("\t" + a.getName() + " → hp: " + a.getHealth() + "; atk: " + a.getAttackPower() + "; crit%: " + a.getCritChance());
+        }
+        result.addLog("Team B:");
+        for(Combatant b : teamB) {
+            result.addLog("\t" + b.getName() + " → hp: " + b.getHealth() + "; atk: " + b.getAttackPower());
+        }
         //Round process
         while (!teamA.isEmpty() && !teamB.isEmpty()) {
             rounds++;
-            result.addLog("Round: " + rounds);
+            result.addLog("—".repeat(20) + "\nRound: " + rounds);
             for(Combatant hero : teamA) {
                 if(!hero.isAlive()){
                     result.addLog(String.format("[%s fainted...]", hero.getName()));
                     teamA.set(teamA.indexOf(hero), dead);
                 }
                 else{
-                    Combatant heroTarget = teamB.get(0);
-                    heroTarget.takeDamage(hero.getAttackPower());
-                    result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", heroTarget.getName(), hero.getAttackPower(), hero.getName()));
+                    Combatant heroTarget = teamB.get(selectRandom(teamB));
+                    critRoll = random.nextDouble(0, 1);
+                    int damage = hero.getAttackPower();
+                    if(critRoll <= hero.getCritChance()){
+                        damage *= 2;
+                    }
+
+                    heroTarget.takeDamage(damage);
+                    result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", heroTarget.getName(), damage, hero.getName()));
                 }
 
             }
+            //deleting dead heroes
             while(teamA.contains(dead)){
                 teamA.remove(dead);
             }
@@ -68,13 +83,24 @@ public final class BattleEngine {
                     teamB.set(teamB.indexOf(enemy), dead);
                 }
                 else{
-                    Combatant enemyTarget = teamA.get(0);
+                    Combatant enemyTarget = teamA.get(selectRandom(teamA));
                     enemyTarget.takeDamage(enemy.getAttackPower());
                     result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", enemyTarget.getName(), enemy.getAttackPower(), enemy.getName()));
                 }
             }
+            //deleting dead monsters
             while(teamB.contains(dead)){
                 teamB.remove(dead);
+            }
+
+            //result after round
+            result.addLog("Team A:");
+            for(Combatant a : teamA) {
+                result.addLog("\t" + a.getName() + " → hp: " + a.getHealth() + "; atk: " + a.getAttackPower());
+            }
+            result.addLog("Team B:");
+            for(Combatant b : teamB) {
+                result.addLog("\t" + b.getName() + " → hp: " + b.getHealth() + "; atk: " + b.getAttackPower());
             }
         }
         if(teamA.isEmpty()) {
@@ -86,5 +112,26 @@ public final class BattleEngine {
         result.setRounds(rounds);
         result.addLog("►Battle ended");
         return result;
+    }
+
+    private int selectRandom(List<Combatant> opposingTeam) {
+        int fullAggro = 1;
+        ArrayList<Integer> aggroList = new ArrayList<>();
+        int id = 0;
+        for(Combatant character : opposingTeam){
+            fullAggro += character.getAggro();
+            aggroList.add(character.getAggro());
+        }
+        int enemySelects = random.nextInt(1, fullAggro);
+        for(int i = 0; i < aggroList.size(); i++){
+            if(enemySelects >= aggroList.get(i)){
+                enemySelects -= aggroList.get(i);
+            }
+            else{
+                id = i;
+                break;
+            }
+        }
+        return id;
     }
 }

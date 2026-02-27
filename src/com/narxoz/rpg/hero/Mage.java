@@ -4,12 +4,15 @@ public class Mage implements Hero {
     private final String name;
     private final int power;
     private int health;
+    private double critRate;
+    private int aggro;
 
     public Mage(String name) {
         this.name = name;
-        //tune stats if needed
         this.power = 25;
         this.health = 80;
+        this.critRate = 0.25;
+        this.aggro = 3;
     }
 
     @Override
@@ -38,5 +41,15 @@ public class Mage implements Hero {
 
     public int getHealth() {
         return health;
+    }
+
+    @Override
+    public double getCritRate() {
+        return critRate;
+    }
+
+    @Override
+    public int getAggrovateData() {
+        return aggro;
     }
 }

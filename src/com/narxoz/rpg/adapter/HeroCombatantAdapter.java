@@ -30,4 +30,19 @@ public class HeroCombatantAdapter implements Combatant {
     public boolean isAlive() {
         return hero.isAlive();
     }
+
+    @Override
+    public int getHealth() {
+        return hero.getHealth();
+    }
+
+    @Override
+    public double getCritChance() {
+        return hero.getCritRate();
+    }
+
+    @Override
+    public int getAggro() {
+        return hero.getAggrovateData();
+    }
 }

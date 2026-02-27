@@ -6,6 +6,7 @@ import com.narxoz.rpg.battle.BattleEngine;
 import com.narxoz.rpg.battle.Combatant;
 import com.narxoz.rpg.battle.EncounterResult;
 import com.narxoz.rpg.enemy.Goblin;
+import com.narxoz.rpg.enemy.Skeleton;
 import com.narxoz.rpg.hero.Mage;
 import com.narxoz.rpg.hero.Warrior;
 
@@ -19,7 +20,9 @@ public class Main {
         //Create heroes and enemies
         Warrior warrior = new Warrior("Aragorn");
         Mage mage = new Mage("Gandalf");
-        Goblin goblin = new Goblin();
+        Goblin goblin = new Goblin("Goblin");
+        Goblin goblin2 = new Goblin("Greener");
+        Skeleton skeleton = new Skeleton("Skelly");
 
         //Wrap with adapters
         ArrayList<Combatant> heroes = new ArrayList<>();
@@ -28,6 +31,8 @@ public class Main {
 
         ArrayList<Combatant> enemies = new ArrayList<>();
         enemies.add(new EnemyCombatantAdapter(goblin));
+        enemies.add(new EnemyCombatantAdapter(goblin2));
+        enemies.add(new EnemyCombatantAdapter(skeleton));
 
         //Demonstrate Singleton behavior
         BattleEngine engineA = BattleEngine.getInstance();

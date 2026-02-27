@@ -30,4 +30,19 @@ public class EnemyCombatantAdapter implements Combatant {
     public boolean isAlive() {
         return !enemy.isDefeated();
     }
+
+    @Override
+    public int getHealth() {
+        return enemy.getHealth();
+    }
+
+    @Override
+    public double getCritChance() {
+        return enemy.checkCriticalChance();
+    }
+
+    @Override
+    public int getAggro() {
+        return enemy.getAggroValue();
+    }
 }

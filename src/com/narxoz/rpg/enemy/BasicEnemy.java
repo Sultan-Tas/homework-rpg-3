@@ -38,4 +38,14 @@ public class BasicEnemy implements Enemy {
     public int getHealth() {
         return health;
     }
+
+    @Override
+    public double checkCriticalChance() {
+        return 0;
+    }
+
+    @Override
+    public int getAggroValue() {
+        return 1;
+    }
 }

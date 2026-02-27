@@ -5,4 +5,7 @@ public interface Hero {
     int getPower();
     void receiveDamage(int amount);
     boolean isAlive();
+    int getHealth();
+    double getCritRate();
+    int getAggrovateData();
 }
