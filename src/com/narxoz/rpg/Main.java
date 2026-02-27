@@ -21,7 +21,7 @@ public class Main {
         Warrior warrior = new Warrior("Aragorn");
         Mage mage = new Mage("Gandalf");
         Goblin goblin = new Goblin("Goblin");
-        Goblin goblin2 = new Goblin("Greener");
+        Goblin goblin2 = new Goblin("Gob the Goblin");
         Skeleton skeleton = new Skeleton("Skelly");
 
         //Wrap with adapters

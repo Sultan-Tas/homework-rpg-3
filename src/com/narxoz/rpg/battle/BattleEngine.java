@@ -27,9 +27,8 @@ public final class BattleEngine {
         //validate inputs and run round-based battle
         //use random if you add critical hits or target selection
         int rounds = 0;
-
         double critRoll;
-        Combatant dead = null;
+
         //checks for empty strings
         if(teamA.isEmpty() || teamB.isEmpty()) {
             EncounterResult fail = new EncounterResult();
@@ -45,7 +44,7 @@ public final class BattleEngine {
         result.addLog("►Battle started");
         result.addLog("Team A:");
         for(Combatant a : teamA) {
-            result.addLog("\t" + a.getName() + " → hp: " + a.getHealth() + "; atk: " + a.getAttackPower() + "; crit%: " + a.getCritChance());
+            result.addLog("\t" + a.getName() + " → hp: " + a.getHealth() + "; atk: " + a.getAttackPower() + "; crit%: " + a.getCritChance()*100 + "%");
         }
         result.addLog("Team B:");
         for(Combatant b : teamB) {
@@ -56,41 +55,32 @@ public final class BattleEngine {
             rounds++;
             result.addLog("—".repeat(20) + "\nRound: " + rounds);
             for(Combatant hero : teamA) {
-                if(!hero.isAlive()){
-                    result.addLog(String.format("[%s fainted...]", hero.getName()));
-                    teamA.set(teamA.indexOf(hero), dead);
+                Combatant heroTarget = teamB.get(selectRandom(teamB));
+                critRoll = random.nextDouble(0, 1);
+                int damage = hero.getAttackPower();
+                if(critRoll <= hero.getCritChance()){
+                    damage *= 2;
                 }
-                else{
-                    Combatant heroTarget = teamB.get(selectRandom(teamB));
-                    critRoll = random.nextDouble(0, 1);
-                    int damage = hero.getAttackPower();
-                    if(critRoll <= hero.getCritChance()){
-                        damage *= 2;
-                    }
-
-                    heroTarget.takeDamage(damage);
-                    result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", heroTarget.getName(), damage, hero.getName()));
+                heroTarget.takeDamage(damage);
+                result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", heroTarget.getName(), damage, hero.getName()));
+                if(!heroTarget.isAlive()){
+                    result.addLog(String.format("[%s fainted...]", heroTarget.getName()));
+                    teamB.remove(heroTarget);
                 }
 
-            }
-            //deleting dead heroes
-            while(teamA.contains(dead)){
-                teamA.remove(dead);
             }
             for(Combatant enemy : teamB) {
                 if(!enemy.isAlive()){
-                    result.addLog(String.format("[%s fainted...]", enemy.getName()));
-                    teamB.set(teamB.indexOf(enemy), dead);
                 }
                 else{
                     Combatant enemyTarget = teamA.get(selectRandom(teamA));
                     enemyTarget.takeDamage(enemy.getAttackPower());
                     result.addLog(String.format("\t[\"%s\" took %d damage from \"%s\"]", enemyTarget.getName(), enemy.getAttackPower(), enemy.getName()));
+                    if(!enemyTarget.isAlive()){
+                        result.addLog(String.format("[%s fainted...]", enemyTarget.getName()));
+                        teamA.remove(enemyTarget);
+                    }
                 }
-            }
-            //deleting dead monsters
-            while(teamB.contains(dead)){
-                teamB.remove(dead);
             }
 
             //result after round

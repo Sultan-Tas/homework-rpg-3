@@ -9,9 +9,9 @@ public class Warrior implements Hero {
 
     public Warrior(String name) {
         this.name = name;
-        this.power = 20;
+        this.power = 10;
         this.health = 120;
-        this.critRate = 0.4;
+        this.critRate = 0.35;
         this.aggro = 5;
     }
 
